@@ -1,0 +1,35 @@
+{
+  "name": "vda-soft/paywire",
+  "description": "A modern PHP library for integrating various payment service providers.",
+  "license": "MIT",
+  "type": "library",
+  "require": {
+    "php": ">=8.4",
+    "psr/http-client": "^1.0"
+  },
+  "require-dev": {
+    "symplify/monorepo-builder": "^12.7",
+    "phpstan/phpstan": "^2.2",
+    "phpunit/phpunit": "13.3.x"
+  },
+  "config": {
+    "allow-plugins": {
+      "php-http/discovery": false
+    },
+    "sort-packages": true
+  },
+  "autoload": {
+    "psr-4": {
+      "PayWire\\Core\\": "src/PayWire/Core/src/",
+      "PayWire\\Bridge\\Symfony\\": "src/PayWire/Bridge/Symfony/src/",
+      "PayWire\\Gateway\\PayU\\": "src/PayWire/Gateway/PayU/src/"
+    }
+  },
+  "autoload-dev": {
+    "psr-4": {
+      "PayWire\\Core\\Tests\\": "src/PayWire/Core/tests/",
+      "PayWire\\Bridge\\Symfony\\Tests\\": "src/PayWire/Bridge/Symfony/tests/",
+      "PayWire\\Gateway\\PayU\\Tests\\": "src/PayWire/Gateway/PayU/tests/"
+    }
+  }
+}

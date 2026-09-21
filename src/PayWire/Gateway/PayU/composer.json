@@ -1,0 +1,20 @@
+{
+  "name": "vda-soft/paywire-payu",
+  "description": "PayU gateway driver for PayWire",
+  "license": "MIT",
+  "type": "library",
+  "require": {
+    "php": ">=8.4",
+    "psr/http-client": "^1.0"
+  },
+  "autoload": {
+    "psr-4": {
+      "PayWire\\Gateway\\PayU\\": "src/"
+    }
+  },
+  "autoload-dev": {
+    "psr-4": {
+      "PayWire\\Gateway\\PayU\\Tests\\": "tests/"
+    }
+  }
+}

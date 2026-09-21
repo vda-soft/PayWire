@@ -1,0 +1,58 @@
+name: Monorepo Split
+
+on:
+  push:
+    branches:
+      - main
+    tags:
+      - '*'
+
+jobs:
+  provide_packages_json:
+    runs-on: ubuntu-latest
+    outputs:
+      matrix: ${{ steps.output_data.outputs.matrix }}
+    steps:
+      - uses: actions/checkout@v4
+
+      - id: output_data
+        shell: bash
+        run: |
+          packages=$(
+            {
+              printf '%s\n' src/PayWire/Core
+              find src/PayWire/Bridge src/PayWire/Gateway \
+                -mindepth 1 -maxdepth 1 -type d -print
+            } | sort | jq -R -s -c '
+              split("\n")
+              | map(select(length > 0))
+              | map({
+                  directory: .,
+                  name: ("paywire-" + (sub("^src/PayWire/"; "") | gsub("/"; "-") | ascii_downcase))
+                })
+            '
+          )
+          echo "matrix=$packages" >> "$GITHUB_OUTPUT"
+
+  split_packages:
+    needs: provide_packages_json
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        package: ${{ fromJSON(needs.provide_packages_json.outputs.matrix) }}
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Monorepo Split of ${{ matrix.package.name }}
+        uses: danharrin/monorepo-split-github-action@v2.4.0
+        with:
+          package_directory: ${{ matrix.package.directory }}
+          repository_organization: 'vda-soft'
+          repository_name: ${{ matrix.package.name }}
+          user_name: 'vda-soft-bot'
+          user_email: 'vda-soft@users.noreply.github.com'
+          branch: 'main'
+        env:
+          GITHUB_TOKEN: ${{ secrets.PAYWIRE_ACCESS_TOKEN }}
