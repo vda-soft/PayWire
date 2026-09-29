@@ -28,6 +28,9 @@ jobs:
       - name: Run PHPStan
         run: composer run phpstan
 
+      - name: Check architecture
+        run: composer run architecture
+
       - name: Check coding style
         run: composer run csfixer -- --dry-run
 
