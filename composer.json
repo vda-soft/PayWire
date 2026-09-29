@@ -1,29 +1,52 @@
 {
   "name": "vda-soft/paywire",
-  "description": "A modern PHP library for integrating various payment service providers.",
+  "description": "A modern PHP system for integrating various payment service providers.",
   "license": "MIT",
   "type": "library",
   "require": {
-    "php": ">=8.4",
-    "psr/http-client": "^1.0"
+    "php": ">=8.4"
   },
   "require-dev": {
-    "symplify/monorepo-builder": "^12.7",
+    "friendsofphp/php-cs-fixer": "^3.95",
     "phpstan/phpstan": "^2.2",
-    "phpunit/phpunit": "13.3.x"
+    "phpstan/phpstan-deprecation-rules": "^2.0",
+    "phpstan/phpstan-doctrine": "^2.0",
+    "phpstan/phpstan-symfony": "^2.0",
+    "phpstan/phpstan-webmozart-assert": "^2.0",
+    "phpunit/phpunit": "^13.3",
+    "symplify/monorepo-builder": "^12.7",
+    "vda-soft/paywire-core": "dev-main",
+    "vda-soft/paywire-bridge-symfony": "dev-main",
+    "vda-soft/paywire-payu": "dev-main"
   },
+  "repositories": [
+    {
+      "type": "path",
+      "url": "src/PayWire/Core",
+      "options": {
+        "symlink": true
+      }
+    },
+    {
+      "type": "path",
+      "url": "src/PayWire/Bridge/Symfony",
+      "options": {
+        "symlink": true
+      }
+    },
+    {
+      "type": "path",
+      "url": "src/PayWire/Gateway/PayU",
+      "options": {
+        "symlink": true
+      }
+    }
+  ],
   "config": {
     "allow-plugins": {
       "php-http/discovery": false
     },
     "sort-packages": true
-  },
-  "autoload": {
-    "psr-4": {
-      "PayWire\\Core\\": "src/PayWire/Core/src/",
-      "PayWire\\Bridge\\Symfony\\": "src/PayWire/Bridge/Symfony/src/",
-      "PayWire\\Gateway\\PayU\\": "src/PayWire/Gateway/PayU/src/"
-    }
   },
   "autoload-dev": {
     "psr-4": {
@@ -31,5 +54,15 @@
       "PayWire\\Bridge\\Symfony\\Tests\\": "src/PayWire/Bridge/Symfony/tests/",
       "PayWire\\Gateway\\PayU\\Tests\\": "src/PayWire/Gateway/PayU/tests/"
     }
+  },
+  "scripts": {
+    "phpunit": "phpunit",
+    "phpstan": "phpstan analyse",
+    "csfixer": "php-cs-fixer fix --no-interaction --verbose",
+    "ci": [
+      "@csfixer",
+      "@phpstan",
+      "@phpunit"
+    ]
   }
 }

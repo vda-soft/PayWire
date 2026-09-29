@@ -5,3 +5,5 @@ composer.phar
 .agents
 
 /composer.lock
+.php-cs-fixer.cache
+/.phpunit.result.cache

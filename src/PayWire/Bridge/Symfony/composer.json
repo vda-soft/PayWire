@@ -5,7 +5,10 @@
   "type": "symfony-bundle",
   "require": {
     "php": ">=8.4",
-    "psr/http-client": "^1.0"
+    "doctrine/orm": "^3.7",
+    "psr/http-client": "^1.0",
+    "symfony/messenger": "^8.1",
+    "vda-soft/paywire-core": "dev-main"
   },
   "autoload": {
     "psr-4": {

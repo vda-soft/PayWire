@@ -1,0 +1,16 @@
+includes:
+    - vendor/phpstan/phpstan-webmozart-assert/extension.neon
+    - vendor/phpstan/phpstan-doctrine/extension.neon
+    - vendor/phpstan/phpstan-doctrine/rules.neon
+    - vendor/phpstan/phpstan-symfony/extension.neon
+    - vendor/phpstan/phpstan-symfony/rules.neon
+    - vendor/phpstan/phpstan-deprecation-rules/rules.neon
+    - phpstan-baseline.neon
+
+parameters:
+    paths:
+        - src/PayWire/Core/src
+        - src/PayWire/Bridge/Symfony/src
+        - src/PayWire/Gateway/PayU/src
+    level: 10
+    treatPhpDocTypesAsCertain: false

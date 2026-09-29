@@ -8,6 +8,29 @@ on:
       - '*'
 
 jobs:
+  quality_checks:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up PHP
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: '8.4'
+          tools: composer:v2
+
+      - name: Install dependencies
+        run: composer install --no-interaction --prefer-dist --no-progress
+
+      - name: Run PHPUnit
+        run: composer run phpunit
+
+      - name: Run PHPStan
+        run: composer run phpstan
+
+      - name: Check coding style
+        run: composer run csfixer -- --dry-run
+
   provide_packages_json:
     runs-on: ubuntu-latest
     outputs:
@@ -35,7 +58,9 @@ jobs:
           echo "matrix=$packages" >> "$GITHUB_OUTPUT"
 
   split_packages:
-    needs: provide_packages_json
+    needs:
+      - provide_packages_json
+      - quality_checks
     runs-on: ubuntu-latest
     strategy:
       fail-fast: false
