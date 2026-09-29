@@ -2,9 +2,9 @@
 
 declare(strict_types=1);
 
-namespace PayWire\Core\Tests\Payment;
+namespace PayWire\Core\Tests\Domain\Payment;
 
-use PayWire\Core\Shared\Money;
+use PayWire\Core\Domain\Shared\Money;
 use PHPUnit\Framework\TestCase;
 
 final class MoneyTest extends TestCase

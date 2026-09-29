@@ -2,16 +2,17 @@
 
 declare(strict_types=1);
 
-namespace PayWire\Core\Tests\Payment;
+namespace PayWire\Core\Tests\Domain\Payment;
 
-use PayWire\Core\Payment\GatewayEnum;
-use PayWire\Core\Payment\Payment;
-use PayWire\Core\Payment\PaymentCompleted;
-use PayWire\Core\Payment\PaymentId;
-use PayWire\Core\Payment\PaymentInitialized;
-use PayWire\Core\Payment\PaymentStatus;
-use PayWire\Core\Payment\PaymentSubmitted;
-use PayWire\Core\Shared\Money;
+use PayWire\Core\Domain\Payment\GatewayEnum;
+use PayWire\Core\Domain\Payment\Payment;
+use PayWire\Core\Domain\Payment\PaymentAlreadyInStatus;
+use PayWire\Core\Domain\Payment\PaymentCompleted;
+use PayWire\Core\Domain\Payment\PaymentId;
+use PayWire\Core\Domain\Payment\PaymentInitialized;
+use PayWire\Core\Domain\Payment\PaymentStatus;
+use PayWire\Core\Domain\Payment\PaymentSubmitted;
+use PayWire\Core\Domain\Shared\Money;
 use PHPUnit\Framework\TestCase;
 
 final class PaymentTest extends TestCase
@@ -60,7 +61,7 @@ final class PaymentTest extends TestCase
 
         $payment->markCompleted();
 
-        $this->expectException(\PayWire\Core\Payment\PaymentAlreadyInStatus::class);
+        $this->expectException(PaymentAlreadyInStatus::class);
 
         $payment->markCompleted();
     }

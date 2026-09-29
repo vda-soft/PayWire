@@ -4,8 +4,8 @@ namespace PayWire\Bridge\Symfony\Infrastructure\Event;
 
 use Doctrine\ORM\EntityManagerInterface;
 use PayWire\Core\Application\EventBusInterface;
-use PayWire\Core\Shared\Infrastructure\Event\PublishedEvent;
-use PayWire\Core\Shared\Infrastructure\OutboxMessage;
+use PayWire\Core\Domain\Shared\Event\PublishedEvent;
+use PayWire\Core\Infrastructure\OutboxMessage;
 
 final class OutboxEventBus implements EventBusInterface
 {

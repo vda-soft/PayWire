@@ -3,8 +3,8 @@
 namespace PayWire\Bridge\Symfony\Infrastructure\Doctrine;
 
 use Doctrine\ORM\EntityManagerInterface;
-use PayWire\Core\Payment\Payment;
-use PayWire\Core\Payment\PaymentRepositoryInterface;
+use PayWire\Core\Domain\Payment\Payment;
+use PayWire\Core\Domain\Payment\PaymentRepositoryInterface;
 
 final class DoctrinePaymentRepository implements PaymentRepositoryInterface
 {

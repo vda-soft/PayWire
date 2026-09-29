@@ -1,6 +1,6 @@
 <?php
 
-namespace PayWire\Core\Shared\Infrastructure\Event;
+namespace PayWire\Core\Domain\Shared\Event;
 
 interface PublishedEvent extends \JsonSerializable
 {

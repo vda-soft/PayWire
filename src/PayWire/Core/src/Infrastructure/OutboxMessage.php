@@ -1,8 +1,8 @@
 <?php
 
-namespace PayWire\Core\Shared\Infrastructure;
+namespace PayWire\Core\Infrastructure;
 
-use PayWire\Core\Shared\Infrastructure\Event\PublishedEvent;
+use PayWire\Core\Domain\Shared\Event\PublishedEvent;
 use Symfony\Component\Uid\Uuid;
 
 class OutboxMessage

@@ -48,7 +48,7 @@ pay_wire:
 
   gateways:
     payu: # your gateway key, store as gatewayKey on Payment
-      adapter: 'payu', # use for identify gateway strategy
+      adapter: 'PayU', # use for identify gateway strategy, GatewayEnum value
       notify_url: null, # webhook url
       continue_url: null, # redirect user for url
 ```
@@ -61,7 +61,7 @@ If you want to keep the process extremely simple, use the service:
 namespace Api/Service;
 
 use PayWire\Core\Application\Command\InitializePayment;
-use PayWire\Core\Payment\GatewayEnum;
+use PayWire\Core\Domain\Payment\GatewayEnum;
 use Symfony\Component\Messenger\MessageBusInterface;
 
 class CreatePayment
@@ -84,7 +84,7 @@ Otherwise, you can take control of the whole process:
 
 ```php
 use PayWire\Core\Application\Command\InitializePayment;
-use PayWire\Core\Payment\GatewayEnum;
+use PayWire\Core\Domain\Payment\GatewayEnum;
 use Symfony\Component\Messenger\MessageBusInterface;
 
 class CreatePayment
@@ -105,7 +105,7 @@ Capture payment:
 
 ```php
 
-use PayWire\Core\Payment\PaymentInitialized;
+use PayWire\Core\Domain\Payment\PaymentInitialized;
 use Symfony\Component\Messenger\MessageBusInterface;
 
 class PaymentInitializedListener

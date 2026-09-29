@@ -3,10 +3,10 @@
 namespace PayWire\Core\Application\Command;
 
 use PayWire\Core\Application\EventBusInterface;
-use PayWire\Core\Payment\Payment;
-use PayWire\Core\Payment\PaymentId;
-use PayWire\Core\Payment\PaymentRepositoryInterface;
-use PayWire\Core\Shared\Money;
+use PayWire\Core\Domain\Payment\Payment;
+use PayWire\Core\Domain\Payment\PaymentId;
+use PayWire\Core\Domain\Payment\PaymentRepositoryInterface;
+use PayWire\Core\Domain\Shared\Money;
 
 class InitializePaymentHandler
 {

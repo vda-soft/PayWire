@@ -1,6 +1,6 @@
 <?php
 
-namespace PayWire\Core\Payment;
+namespace PayWire\Core\Domain\Payment;
 
 final class PaymentAlreadyInStatus extends \LogicException
 {

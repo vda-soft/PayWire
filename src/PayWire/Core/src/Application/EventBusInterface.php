@@ -2,7 +2,7 @@
 
 namespace PayWire\Core\Application;
 
-use PayWire\Core\Shared\Infrastructure\Event\PublishedEvent;
+use PayWire\Core\Domain\Shared\Event\PublishedEvent;
 
 interface EventBusInterface
 {

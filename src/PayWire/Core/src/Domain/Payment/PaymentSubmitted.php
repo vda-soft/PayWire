@@ -1,8 +1,8 @@
 <?php
 
-namespace PayWire\Core\Payment;
+namespace PayWire\Core\Domain\Payment;
 
-use PayWire\Core\Shared\Infrastructure\Event\PublishedEvent;
+use PayWire\Core\Domain\Shared\Event\PublishedEvent;
 
 final readonly class PaymentSubmitted implements PublishedEvent
 {
