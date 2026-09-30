@@ -8,7 +8,9 @@
   },
   "require-dev": {
     "friendsofphp/php-cs-fixer": "^3.95",
+    "nikic/php-parser": "^5.9",
     "phparkitect/phparkitect": "^1.3",
+    "phpmetrics/phpmetrics": "^2.11",
     "phpstan/phpstan": "^2.2",
     "phpstan/phpstan-deprecation-rules": "^2.0",
     "phpstan/phpstan-doctrine": "^2.0",
@@ -61,6 +63,11 @@
     "phpstan": "phpstan analyse",
     "csfixer": "php-cs-fixer fix --no-interaction --verbose",
     "architecture": "phparkitect check",
+    "metrics": "phpmetrics --format=json --report-file=var/codecharta-metrics.json src/",
+    "metrics:html": "phpmetrics --report-html=var/metrics src/",
+    "codecharta:generate": "php bin/codecharta-converter.php var/metrics/js/latest.json var/codecharta.cc.json",
+    "codecharta:serve": "docker run --rm -p 4200:4200 -v $(pwd):/data codecharta/codecharta -i /data/var/codecharta.cc.json --server",
+    "codecharta:export": "docker run --rm -v $(pwd):/data codecharta/codecharta -i /data/var/codecharta.cc.json -o /data/var/codecharta-analysis.cc.json",
     "ci": [
       "@csfixer",
       "@phpstan",
