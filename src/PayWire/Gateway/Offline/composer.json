@@ -1,0 +1,19 @@
+{
+  "name": "vda-soft/paywire-offline",
+  "description": "Offline gateway driver for PayWire",
+  "license": "MIT",
+  "type": "library",
+  "require": {
+    "php": ">=8.4"
+  },
+  "autoload": {
+    "psr-4": {
+      "PayWire\\Gateway\\Offline\\": "src/"
+    }
+  },
+  "autoload-dev": {
+    "psr-4": {
+      "PayWire\\Gateway\\Offline\\Tests\\": "tests/"
+    }
+  }
+}

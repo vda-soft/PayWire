@@ -43,6 +43,13 @@
       "options": {
         "symlink": true
       }
+    },
+    {
+      "type": "path",
+      "url": "src/PayWire/Gateway/Offline",
+      "options": {
+        "symlink": true
+      }
     }
   ],
   "config": {
@@ -55,7 +62,9 @@
     "psr-4": {
       "PayWire\\Core\\Tests\\": "src/PayWire/Core/tests/",
       "PayWire\\Bridge\\Symfony\\Tests\\": "src/PayWire/Bridge/Symfony/tests/",
-      "PayWire\\Gateway\\PayU\\Tests\\": "src/PayWire/Gateway/PayU/tests/"
+      "PayWire\\Gateway\\PayU\\Tests\\": "src/PayWire/Gateway/PayU/tests/",
+      "PayWire\\Gateway\\Offline\\Tests\\": "src/PayWire/Gateway/Offline/tests/"
+
     }
   },
   "scripts": {
