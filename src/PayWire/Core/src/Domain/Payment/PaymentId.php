@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace PayWire\Core\Domain\Payment;
 
 use Symfony\Component\Uid\Uuid;
@@ -22,6 +24,6 @@ final readonly class PaymentId implements \Stringable
 
     public function __toString(): string
     {
-        return $this->id->toRfc4122();
+        return $this->id->__toString();
     }
 }

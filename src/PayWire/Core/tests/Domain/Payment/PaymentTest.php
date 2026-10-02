@@ -21,8 +21,8 @@ final class PaymentTest extends TestCase
     {
         $payment = Payment::initialize(
             PaymentId::generate(),
-            Money::create('12.34', 'USD'),
             GatewayEnum::PayU,
+            Money::create('12.34', 'USD'),
         );
 
         $events = \iterator_to_array($payment->releaseEvents());
@@ -36,8 +36,8 @@ final class PaymentTest extends TestCase
     {
         $payment = Payment::initialize(
             PaymentId::generate(),
-            Money::zero('USD'),
             GatewayEnum::PayU,
+            Money::zero('USD'),
         );
 
         $payment->markSubmitted('order-id');
@@ -55,8 +55,8 @@ final class PaymentTest extends TestCase
     {
         $payment = Payment::initialize(
             PaymentId::generate(),
-            Money::zero('USD'),
             GatewayEnum::PayU,
+            Money::zero('USD'),
         );
 
         $payment->markCompleted();
@@ -64,5 +64,24 @@ final class PaymentTest extends TestCase
         $this->expectException(PaymentAlreadyInStatus::class);
 
         $payment->markCompleted();
+    }
+
+    public function testCanSubmitOnlyWhenStateMachineAllowsTransitionToSubmitted(): void
+    {
+        $payment = Payment::initialize(
+            PaymentId::generate(),
+            GatewayEnum::PayU,
+            Money::zero('USD'),
+        );
+
+        self::assertTrue($payment->canSubmit());
+
+        $payment->markSubmitted('order-id');
+
+        self::assertFalse($payment->canSubmit());
+
+        $payment->markCompleted();
+
+        self::assertFalse($payment->canSubmit());
     }
 }

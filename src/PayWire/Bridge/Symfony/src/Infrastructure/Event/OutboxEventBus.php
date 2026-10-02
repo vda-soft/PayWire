@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace PayWire\Bridge\Symfony\Infrastructure\Event;
 
 use Doctrine\ORM\EntityManagerInterface;

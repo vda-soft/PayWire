@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace PayWire\Core\Domain\Payment;
 
 final class PaymentStateMachine
@@ -28,10 +30,15 @@ final class PaymentStateMachine
             throw new PaymentAlreadyInStatus($to);
         }
 
-        if (!\in_array($to, self::TRANSITIONS[$from->value], true)) {
+        if (!self::canTransition($from, $to)) {
             throw new InvalidPaymentStateTransition($from, $to);
         }
 
         return $to;
+    }
+
+    public static function canTransition(PaymentStatus $from, PaymentStatus $to): bool
+    {
+        return $from !== $to && \in_array($to, self::TRANSITIONS[$from->value], true);
     }
 }

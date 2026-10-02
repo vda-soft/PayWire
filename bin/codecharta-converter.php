@@ -1,6 +1,8 @@
 #!/usr/bin/env php
 <?php
 
+declare(strict_types=1);
+
 /**
  * CodeCharta Converter for PHP projects
  * Converts PHP metrics (from phpmetrics + PHP-Parser) to CodeCharta .cc.json format

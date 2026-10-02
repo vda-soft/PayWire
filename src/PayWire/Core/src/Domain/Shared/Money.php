@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace PayWire\Core\Domain\Shared;
 
 use Brick\Money\Money as BrickMoney;

@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace PayWire\Core\Application;
 
 use PayWire\Core\Domain\Shared\Event\PublishedEvent;

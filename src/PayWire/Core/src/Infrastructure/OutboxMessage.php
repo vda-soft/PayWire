@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace PayWire\Core\Infrastructure;
 
 use PayWire\Core\Domain\Shared\Event\PublishedEvent;
@@ -22,7 +24,7 @@ class OutboxMessage
     public static function fromPublishedEvent(PublishedEvent $event): self
     {
         return new self(
-            Uuid::v7(),
+            (string) Uuid::v7(),
             \get_class($event),
             $event->jsonSerialize(),
         );

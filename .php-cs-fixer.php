@@ -11,6 +11,7 @@ return new PhpCsFixer\Config()
     ->setRules(
         [
             '@Symfony' => true,
+            'declare_strict_types' => true,
             'strict_param' => false,
             'concat_space' => ['spacing' => 'one'],
             'phpdoc_align' => ['align' => 'left'],

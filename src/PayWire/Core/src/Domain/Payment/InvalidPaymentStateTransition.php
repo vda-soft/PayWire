@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace PayWire\Core\Domain\Payment;
 
 final class InvalidPaymentStateTransition extends \LogicException

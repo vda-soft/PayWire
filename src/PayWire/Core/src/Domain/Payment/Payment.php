@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace PayWire\Core\Domain\Payment;
 
 use PayWire\Core\Domain\Shared\Event\PublishedEvent;
@@ -9,10 +11,12 @@ class Payment
 {
     public private(set) readonly PaymentId $paymentId;
     public private(set) readonly GatewayEnum $gateway;
+    public private(set) readonly ?string $posId;
     public private(set) PaymentStatus $status = PaymentStatus::NEW;
     public private(set) readonly Money $amount;
     // external order identifier
-    public private(set) string $orderId;
+    public private(set) ?string $orderId = null;
+    public private(set) readonly string $publicToken;
 
     /** @var PublishedEvent[] */
     private array $recordedEvents = [];
@@ -21,24 +25,33 @@ class Payment
         PaymentId $paymentId,
         GatewayEnum $gateway,
         Money $amount,
+        ?string $posId = null,
     ) {
         $this->paymentId = $paymentId;
         $this->gateway = $gateway;
         $this->amount = $amount;
+        $this->publicToken = UrlTokenGenerator::get();
+        $this->posId = $posId;
 
         $this->recordThat(new PaymentInitialized($this->paymentId, $this->gateway));
     }
 
-    public static function initialize(PaymentId $paymentId, Money $amount, GatewayEnum $gateway): self
+    public static function initialize(PaymentId $paymentId, GatewayEnum $gateway, Money $amount): self
     {
         return new self($paymentId, $gateway, $amount);
     }
 
-    /**
-     * TODO use optimistic lock, submitted is only for information
-     */
+    public function canSubmit(): bool
+    {
+        return $this->canTransition(PaymentStatus::SUBMITTED);
+    }
+
     public function markSubmitted(string $orderId): void
     {
+        if (null !== $this->orderId) {
+            return;
+        }
+
         $this->transitionTo(PaymentStatus::SUBMITTED);
         $this->orderId = $orderId;
 
@@ -73,6 +86,11 @@ class Payment
     protected function recordThat(PublishedEvent $event): void
     {
         $this->recordedEvents[] = $event;
+    }
+
+    private function canTransition(PaymentStatus $status): bool
+    {
+        return PaymentStateMachine::canTransition($this->status, $status);
     }
 
     protected function transitionTo(PaymentStatus $status): void

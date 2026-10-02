@@ -7,6 +7,7 @@
     "php": ">=8.4",
     "doctrine/orm": "^3.7",
     "psr/http-client": "^1.0",
+    "symfony/dependency-injection": "^8.1",
     "symfony/messenger": "^8.1",
     "vda-soft/paywire-core": "dev-main"
   },
