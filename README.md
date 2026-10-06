@@ -76,7 +76,7 @@ class CreatePayment
         $payment = $this->paymentProcessor->prepareAndSubmit(new InitializePayment('23.45', 'PLN', GatewayEnum::PayU));
         
         #The service saves the entity, sends a request to the partner and returns the payment - all in one.
-        return [$payment->paymentId, $payment->orderId, $payment->publicToken];
+        return [$payment->paymentId, $payment->externalId, $payment->publicToken];
     }
 }
 ```

@@ -6,49 +6,57 @@ namespace PayWire\Core\Domain\Shared;
 
 use Brick\Money\Money as BrickMoney;
 
-final readonly class Money implements \Stringable
+final readonly class Money implements \Stringable, \JsonSerializable
 {
-    private function __construct(private BrickMoney $money)
-    {
+    /**
+     * @internal
+     */
+    public function __construct(
+        public string $amount,
+        public string $currency,
+    ) {
     }
 
-    public static function create(BrickMoney|string|int|float $amount, string $currency): self
+    public static function of(string|int|float $amount, string $currency): self
     {
-        if ($amount instanceof BrickMoney) {
-            return new self($amount);
-        }
-
-        return new self(BrickMoney::of((string) $amount, $currency));
+        return new self((string) $amount, $currency);
     }
 
     public static function zero(string $currency): self
     {
-        return new self(BrickMoney::zero($currency));
+        return new self('0', $currency);
     }
 
     public function add(self $money): self
     {
-        return new self($this->money->plus($money->money));
+        return new self(
+            $this->brick()->plus($money->brick())->getAmount()->toString(),
+            $this->currency
+        );
     }
 
     public function subtract(self $money): self
     {
-        return new self($this->money->minus($money->money));
+        return new self(
+            $this->brick()->minus($money->brick())->getAmount()->toString(),
+            $this->currency
+        );
     }
 
     public function multiplyBy(int|float $factor): self
     {
-        return new self($this->money->multipliedBy((string) $factor));
+        return new self(
+            $this->brick()->multipliedBy((string) $factor)->getAmount()->toString(),
+            $this->currency
+        );
     }
 
     public function divideBy(int|float $divisor): self
     {
-        return new self($this->money->dividedBy((string) $divisor));
-    }
-
-    public function getValue(): string
-    {
-        return $this->money->getAmount()->toString();
+        return new self(
+            $this->brick()->dividedBy((string) $divisor)->getAmount()->toString(),
+            $this->currency
+        );
     }
 
     /**
@@ -56,11 +64,25 @@ final readonly class Money implements \Stringable
      */
     public function getValueAtScale(int $scale): string
     {
-        return $this->money->getAmount()->toScale($scale)->toString();
+        return $this->brick()->getAmount()->toScale($scale)->toString();
+    }
+
+    private function brick(): BrickMoney
+    {
+        return BrickMoney::of($this->amount, $this->currency);
+    }
+
+    /** @return array{amount: string, currency: string} */
+    public function jsonSerialize(): array
+    {
+        return [
+            'amount' => $this->amount,
+            'currency' => $this->currency,
+        ];
     }
 
     public function __toString(): string
     {
-        return (string) $this->money;
+        return $this->currency . ' ' . $this->amount;
     }
 }

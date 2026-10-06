@@ -11,7 +11,7 @@ final class RandomStringGeneratorTest extends TestCase
 {
     public function testGeneratesUrlSafeToken(): void
     {
-        $value = UrlTokenGenerator::get();
+        $value = UrlTokenGenerator::generate();
 
         self::assertSame(43, \strlen($value));
         self::assertMatchesRegularExpression('/\A[A-Za-z0-9_-]+\z/', $value);

@@ -9,7 +9,11 @@
     "psr/http-client": "^1.0",
     "symfony/dependency-injection": "^8.1",
     "symfony/messenger": "^8.1",
-    "vda-soft/paywire-core": "dev-main"
+    "vda-soft/paywire-core": "dev-main",
+    "symfony/property-access": "^8.1",
+    "symfony/serializer": "^8.1"
+  },
+  "require-dev": {
   },
   "autoload": {
     "psr-4": {

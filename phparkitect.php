@@ -20,6 +20,7 @@ return static function (Config $config): void {
                     'PayWire\Core',
                     'Brick\Money',
                     'Symfony\Component\Uid',
+                    'Webmozart\Assert',
                 ]))
             ->because('<Core dependency error>'),
         Rule::allClasses()

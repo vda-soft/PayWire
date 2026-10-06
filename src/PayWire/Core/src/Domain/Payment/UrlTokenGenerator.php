@@ -10,7 +10,7 @@ final class UrlTokenGenerator
     {
     }
 
-    public static function get(): string
+    public static function generate(): string
     {
         return \rtrim(\strtr(\base64_encode(\random_bytes(32)), '+/', '-_'), '=');
     }

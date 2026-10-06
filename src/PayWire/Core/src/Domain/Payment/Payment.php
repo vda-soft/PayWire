@@ -10,13 +10,22 @@ use PayWire\Core\Domain\Shared\Money;
 class Payment
 {
     public private(set) readonly PaymentId $paymentId;
+    public private(set) ?string $externalId = null;
     public private(set) readonly GatewayEnum $gateway;
     public private(set) readonly ?string $posId;
     public private(set) PaymentStatus $status = PaymentStatus::NEW;
-    public private(set) readonly Money $amount;
-    // external order identifier
-    public private(set) ?string $orderId = null;
+    public private(set) readonly Money $total;
+    public private(set) readonly OrderReference $order;
+    public private(set) readonly CustomerReference $customer;
+    public private(set) readonly string $description;
     public private(set) readonly string $publicToken;
+
+    public private(set) ?Details $details = null;
+    /** @var \JsonSerializable[] */
+    public private(set) array $eventLog = [];
+
+    public private(set) \DateTimeImmutable $createdAt;
+    public private(set) \DateTimeImmutable $updatedAt;
 
     /** @var PublishedEvent[] */
     private array $recordedEvents = [];
@@ -24,21 +33,29 @@ class Payment
     private function __construct(
         PaymentId $paymentId,
         GatewayEnum $gateway,
-        Money $amount,
+        Money $total,
+        OrderReference $order,
+        CustomerReference $customer,
+        string $description,
         ?string $posId = null,
     ) {
         $this->paymentId = $paymentId;
         $this->gateway = $gateway;
-        $this->amount = $amount;
-        $this->publicToken = UrlTokenGenerator::get();
+        $this->total = $total;
+        $this->order = $order;
+        $this->customer = $customer;
+        $this->description = $description;
+        $this->publicToken = UrlTokenGenerator::generate();
         $this->posId = $posId;
+        $this->createdAt = new \DateTimeImmutable();
+        $this->updatedAt = new \DateTimeImmutable();
 
         $this->recordThat(new PaymentInitialized($this->paymentId, $this->gateway));
     }
 
-    public static function initialize(PaymentId $paymentId, GatewayEnum $gateway, Money $amount): self
+    public static function initialize(PaymentId $paymentId, GatewayEnum $gateway, Money $amount, OrderReference $order, CustomerReference $customer, string $description, ?string $posId = null): self
     {
-        return new self($paymentId, $gateway, $amount);
+        return new self($paymentId, $gateway, $amount, $order, $customer, $description, $posId);
     }
 
     public function canSubmit(): bool
@@ -46,16 +63,16 @@ class Payment
         return $this->canTransition(PaymentStatus::SUBMITTED);
     }
 
-    public function markSubmitted(string $orderId): void
+    public function markSubmitted(string $externalId): void
     {
-        if (null !== $this->orderId) {
+        if (null !== $this->externalId) {
             return;
         }
 
         $this->transitionTo(PaymentStatus::SUBMITTED);
-        $this->orderId = $orderId;
+        $this->externalId = $externalId;
 
-        $this->recordThat(new PaymentSubmitted($this->paymentId, $this->orderId));
+        $this->recordThat(new PaymentSubmitted($this->paymentId, $this->externalId));
     }
 
     public function markCompleted(): void
@@ -86,6 +103,7 @@ class Payment
     protected function recordThat(PublishedEvent $event): void
     {
         $this->recordedEvents[] = $event;
+        $this->eventLog[$this->now()->getTimestamp()] = $event;
     }
 
     private function canTransition(PaymentStatus $status): bool
@@ -95,6 +113,15 @@ class Payment
 
     protected function transitionTo(PaymentStatus $status): void
     {
+        if ($this->status !== $status) {
+            $this->updatedAt = $this->now();
+        }
+
         $this->status = PaymentStateMachine::transition($this->status, $status);
+    }
+
+    private function now(): \DateTimeImmutable
+    {
+        return new \DateTimeImmutable();
     }
 }

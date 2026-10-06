@@ -7,7 +7,6 @@ namespace PayWire\Core\Application\Command;
 use PayWire\Core\Application\EventBusInterface;
 use PayWire\Core\Domain\Payment\Payment;
 use PayWire\Core\Domain\Payment\PaymentRepository;
-use PayWire\Core\Domain\Shared\Money;
 
 class InitializePaymentHandler
 {
@@ -22,7 +21,11 @@ class InitializePaymentHandler
         $payment = Payment::initialize(
             $command->paymentId,
             $command->gateway,
-            Money::create($command->amount, $command->currency),
+            $command->total,
+            $command->order,
+            $command->customer,
+            $command->description,
+            $command->posId
         );
 
         $this->paymentRepository->save($payment);
