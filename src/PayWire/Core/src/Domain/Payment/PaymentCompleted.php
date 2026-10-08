@@ -10,7 +10,7 @@ final readonly class PaymentCompleted implements PublishedEvent
 {
     public function __construct(
         public PaymentId $paymentId,
-        public \DateTimeImmutable $occurredAt = new \DateTimeImmutable(),
+        public \DateTimeImmutable $occurredAt,
     ) {
     }
 

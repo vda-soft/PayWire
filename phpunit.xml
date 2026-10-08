@@ -9,4 +9,13 @@
             <directory>src/PayWire/Gateway/PayU/tests</directory>
         </testsuite>
     </testsuites>
+    <listeners>
+        <listener class="Symfony\Bridge\PhpUnit\SymfonyTestsListener">
+            <arguments>
+                <array>
+                    <element key="time-sensitive"><string>PayWire\Core\Domain\Shared\Clock</string></element>
+                </array>
+            </arguments>
+        </listener>
+    </listeners>
 </phpunit>

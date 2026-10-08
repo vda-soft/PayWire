@@ -13,7 +13,8 @@
 - Preserve behavior unless the user or a spec explicitly asks for a behavior change.
 - Keep changes minimal, focused, and integrated through real call sites.
 - Use the closest package/module `AGENTS.md` for local architecture, imports, and validation commands.
-- use modern PHP features and best practices released in PHP 8.4
+- Use modern PHP features and best practices released in PHP 8.4.
+- If unsure about a package version, check `composer.json` / `composer.lock` instead of assuming.
 
 ## Ask First
 
@@ -29,9 +30,13 @@
 
 Choose the right script:
 
+- `composer ci` — run full CI pipeline (tests, static analysis, architecture)
 - `composer phpunit` for run tests
+  - `composer phpunit -- --filter PaymentTest` — run specific test
+  - `composer phpunit -- --testdox` — verbose output
 - `composer phpstan` for static analysis
-- `composer csfixer` for code fixing
+  - `composer phpstan -- --no-progress` — disable progress bar
+  - `composer phpstan -- --level=max` — strictest level
 - `composer architecture` for architecture validation
 
 ## Core Principles
@@ -40,6 +45,7 @@ Choose the right script:
 - **Simplicity First**: Make every change as simple as possible. Impact minimal code.
 - **No Laziness**: Find root causes. No temporary fixes. Senior developer standards.
 - **Minimal Impact**: Changes should only touch what's necessary. Avoid introducing bugs.
+- **Self-Documenting Code**: Don't use comments unless absolutely necessary. Class, method, and variable names should clearly express intent.
 
 ## Workflow Orchestration
 

@@ -10,19 +10,19 @@ final readonly class PaymentSubmitted implements PublishedEvent
 {
     public function __construct(
         public PaymentId $paymentId,
-        public string $orderId,
-        public \DateTimeImmutable $occurredAt = new \DateTimeImmutable(),
+        public string $externalId,
+        public \DateTimeImmutable $occurredAt,
     ) {
     }
 
     /**
-     * @return array{'paymentId': string, "orderId": string, "occurredAt": string}
+     * @return array{'paymentId': string, "externalId": string, "occurredAt": string}
      */
     public function jsonSerialize(): array
     {
         return [
             'paymentId' => (string) $this->paymentId,
-            'orderId' => $this->orderId,
+            'externalId' => $this->externalId,
             'occurredAt' => $this->occurredAt->format(\DateTimeInterface::ATOM),
         ];
     }

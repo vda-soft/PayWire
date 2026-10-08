@@ -1,4 +1,5 @@
 includes:
+    - tools/PHPStan/extension.neon
     - vendor/phpstan/phpstan-webmozart-assert/extension.neon
     - vendor/phpstan/phpstan-doctrine/extension.neon
     - vendor/phpstan/phpstan-doctrine/rules.neon
@@ -12,5 +13,6 @@ parameters:
         - src/PayWire/Core/src
         - src/PayWire/Bridge/Symfony/src
         - src/PayWire/Gateway/PayU/src
+        - src/PayWire/Gateway/Offline/src
     level: 10
     treatPhpDocTypesAsCertain: false

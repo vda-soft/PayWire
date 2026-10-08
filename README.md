@@ -143,7 +143,7 @@ class PaymentSubmittedListener
     
         #grab payment data and pass it to the frontend
         
-        return [$event->paymentId, $event->orderId, $event->paymentUrl];
+        return [$event->paymentId, $event->externalId, $event->paymentUrl];
     }
 }
 ```

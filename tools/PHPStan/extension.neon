@@ -1,0 +1,5 @@
+services:
+    -
+        class: PayWire\Tools\PHPStan\Rules\ForbidDirectDateTimeInstantiationRule
+        tags:
+            - phpstan.rules.rule

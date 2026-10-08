@@ -21,13 +21,13 @@ final class SubmitPaymentHandler
     {
         $payment = $this->paymentRepository->findById($command->paymentId);
         if (!$payment->canSubmit()) {
-            throw new \LogicException('Payment cannot be submitted.');
+            throw new \LogicException(\sprintf('Payment cannot be submitted. Current status: %s', $payment->status->value));
         }
 
         $response = $this->gatewayResolver->resolve($payment->gateway)
             ->submit($payment);
 
-        $payment->markSubmitted($response->orderId);
+        $payment->markSubmitted($response);
 
         $this->paymentRepository->save($payment);
         $this->eventBus->commitAll($payment->releaseEvents());

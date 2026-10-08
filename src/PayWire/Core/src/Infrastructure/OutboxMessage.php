@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace PayWire\Core\Infrastructure;
 
+use PayWire\Core\Domain\Shared\Clock\ClockRegistry;
 use PayWire\Core\Domain\Shared\Event\PublishedEvent;
 use Symfony\Component\Uid\Uuid;
 
@@ -16,7 +17,7 @@ class OutboxMessage
         public readonly string $id,
         public readonly string $eventClass,
         public readonly array $payload,
-        public readonly \DateTimeImmutable $createdAt = new \DateTimeImmutable(),
+        public readonly \DateTimeImmutable $createdAt,
         public ?\DateTimeImmutable $publishedAt = null,
     ) {
     }
@@ -27,6 +28,7 @@ class OutboxMessage
             (string) Uuid::v7(),
             \get_class($event),
             $event->jsonSerialize(),
+            ClockRegistry::get()->now()
         );
     }
 }

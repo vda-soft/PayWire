@@ -17,6 +17,11 @@ final readonly class Money implements \Stringable, \JsonSerializable
     ) {
     }
 
+    public function __toString(): string
+    {
+        return $this->currency . ' ' . $this->amount;
+    }
+
     public static function of(string|int|float $amount, string $currency): self
     {
         return new self((string) $amount, $currency);
@@ -67,11 +72,6 @@ final readonly class Money implements \Stringable, \JsonSerializable
         return $this->brick()->getAmount()->toScale($scale)->toString();
     }
 
-    private function brick(): BrickMoney
-    {
-        return BrickMoney::of($this->amount, $this->currency);
-    }
-
     /** @return array{amount: string, currency: string} */
     public function jsonSerialize(): array
     {
@@ -81,8 +81,8 @@ final readonly class Money implements \Stringable, \JsonSerializable
         ];
     }
 
-    public function __toString(): string
+    private function brick(): BrickMoney
     {
-        return $this->currency . ' ' . $this->amount;
+        return BrickMoney::of($this->amount, $this->currency);
     }
 }

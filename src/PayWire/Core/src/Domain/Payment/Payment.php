@@ -4,11 +4,15 @@ declare(strict_types=1);
 
 namespace PayWire\Core\Domain\Payment;
 
+use PayWire\Core\Domain\Shared\Clock\ClockRegistry;
 use PayWire\Core\Domain\Shared\Event\PublishedEvent;
 use PayWire\Core\Domain\Shared\Money;
+use PayWire\Core\Domain\Shared\SubmissionResult;
 
 class Payment
 {
+    private const int MAX_LOGGED_EVENT_DATA_BYTES = 4096;
+
     public private(set) readonly PaymentId $paymentId;
     public private(set) ?string $externalId = null;
     public private(set) readonly GatewayEnum $gateway;
@@ -21,7 +25,7 @@ class Payment
     public private(set) readonly string $publicToken;
 
     public private(set) ?Details $details = null;
-    /** @var \JsonSerializable[] */
+    /** @var list<array{type: class-string<\JsonSerializable>, timestamp: int, data: mixed}> */
     public private(set) array $eventLog = [];
 
     public private(set) \DateTimeImmutable $createdAt;
@@ -47,10 +51,12 @@ class Payment
         $this->description = $description;
         $this->publicToken = UrlTokenGenerator::generate();
         $this->posId = $posId;
-        $this->createdAt = new \DateTimeImmutable();
-        $this->updatedAt = new \DateTimeImmutable();
 
-        $this->recordThat(new PaymentInitialized($this->paymentId, $this->gateway));
+        $occurredAt = ClockRegistry::get()->now();
+        $this->createdAt = $occurredAt;
+        $this->updatedAt = $occurredAt;
+
+        $this->recordThat(new PaymentInitialized($this->paymentId, $this->gateway, $occurredAt));
     }
 
     public static function initialize(PaymentId $paymentId, GatewayEnum $gateway, Money $amount, OrderReference $order, CustomerReference $customer, string $description, ?string $posId = null): self
@@ -63,23 +69,24 @@ class Payment
         return $this->canTransition(PaymentStatus::SUBMITTED);
     }
 
-    public function markSubmitted(string $externalId): void
+    public function markSubmitted(SubmissionResult $result): void
     {
         if (null !== $this->externalId) {
             return;
         }
 
         $this->transitionTo(PaymentStatus::SUBMITTED);
-        $this->externalId = $externalId;
+        $this->externalId = $result->externalId;
 
-        $this->recordThat(new PaymentSubmitted($this->paymentId, $this->externalId));
+        $this->recordThat(new PaymentSubmitted($this->paymentId, $result->externalId, ClockRegistry::get()->now()));
+        $this->logEvent($result);
     }
 
     public function markCompleted(): void
     {
         $this->transitionTo(PaymentStatus::COMPLETED);
 
-        $this->recordThat(new PaymentCompleted($this->paymentId));
+        $this->recordThat(new PaymentCompleted($this->paymentId, ClockRegistry::get()->now()));
     }
 
     public function markCanceled(): void
@@ -103,25 +110,36 @@ class Payment
     protected function recordThat(PublishedEvent $event): void
     {
         $this->recordedEvents[] = $event;
-        $this->eventLog[$this->now()->getTimestamp()] = $event;
-    }
-
-    private function canTransition(PaymentStatus $status): bool
-    {
-        return PaymentStateMachine::canTransition($this->status, $status);
+        $this->logEvent($event);
     }
 
     protected function transitionTo(PaymentStatus $status): void
     {
         if ($this->status !== $status) {
-            $this->updatedAt = $this->now();
+            $this->updatedAt = ClockRegistry::get()->now();
         }
 
         $this->status = PaymentStateMachine::transition($this->status, $status);
     }
 
-    private function now(): \DateTimeImmutable
+    private function logEvent(\JsonSerializable $event): void
     {
-        return new \DateTimeImmutable();
+        $eventData = $event->jsonSerialize();
+        $serializedData = \json_encode($eventData, \JSON_THROW_ON_ERROR | \JSON_INVALID_UTF8_SUBSTITUTE);
+
+        $isTruncated = \strlen($serializedData) > self::MAX_LOGGED_EVENT_DATA_BYTES;
+        $data = $isTruncated ? ['preview' => \mb_strcut($serializedData, 0, self::MAX_LOGGED_EVENT_DATA_BYTES)] : $eventData;
+
+        $this->eventLog[] = [
+            'type' => $event::class,
+            'timestamp' => ClockRegistry::get()->now()->getTimestamp(),
+            'data' => $data,
+            'truncated' => $isTruncated,
+        ];
+    }
+
+    private function canTransition(PaymentStatus $status): bool
+    {
+        return PaymentStateMachine::canTransition($this->status, $status);
     }
 }

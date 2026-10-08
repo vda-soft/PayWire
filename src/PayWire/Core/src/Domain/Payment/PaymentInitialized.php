@@ -11,7 +11,7 @@ final readonly class PaymentInitialized implements PublishedEvent
     public function __construct(
         public PaymentId $paymentId,
         public GatewayEnum $gateway,
-        public \DateTimeImmutable $occurredAt = new \DateTimeImmutable(),
+        public \DateTimeImmutable $occurredAt,
     ) {
     }
 
